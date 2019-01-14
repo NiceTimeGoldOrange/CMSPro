@@ -1,18 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using CMSPro.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CMSPro.Models;
 
 namespace CMSPro.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class HomeController : Controller
     {
         public IActionResult Index()
+        {
+            ViewBag.ag = "122222";
+
+            TRoom room = new TRoom();
+
+            return View("ddd");
+        }
+
+        public IActionResult About()
+        {
+            ViewData["Message"] = "Your application description page.";
+
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            ViewData["Message"] = "Your contact page.";
+
+            return View();
+        }
+
+        public IActionResult Privacy()
         {
             return View();
         }
@@ -24,3 +47,4 @@ namespace CMSPro.Controllers
         }
     }
 }
+

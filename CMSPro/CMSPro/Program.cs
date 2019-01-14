@@ -19,6 +19,7 @@ namespace CMSPro
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>(); // 调用Startuo这个类
+                .UseStartup<Startup>();
     }
 }
+
