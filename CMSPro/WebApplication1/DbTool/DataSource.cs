@@ -10,32 +10,36 @@ namespace WebApplication1.DbTool
 {
     public class DataSource
     {
-        string connStr = "Data Source=(local);Initial Catalog=MRBS;Persist Security Info=True;User ID=sa;Password=123";
+        readonly string connStr = "Data Source=(local);Initial Catalog=Aecg;Persist Security Info=True;User ID=sa;Password=123";
         private static DataSource instance;
+        SqlConnection conn = null;
+
         private DataSource()
         {
 
         }
 
+        // 以集合返回所有TRoom
         internal List<TRoom> GetRoomList()
         {
             List<TRoom> roomlsit = new List<TRoom>();
             TRoom room;
             try
             {
-                string sql = @"SELECT * FROM(
-                            SELECT TOP 105 * FROM(
-                                SELECT TOP 105 * FROM T_room ORDER BY ID ASC)
-                                    AS TEMP1 ORDER BY ID DESC)
-                                AS TEMP2 ORDER BY ID ASC ";
+                //string sql = @"SELECT * FROM(
+                //            SELECT TOP 105 * FROM(
+                //                SELECT TOP 105 * FROM T_room ORDER BY ID ASC)
+                //                    AS TEMP1 ORDER BY ID DESC)
+                //                AS TEMP2 ORDER BY ID ASC ";
+                string sql = "SELECT * FROM t_room";
                 SqlDataReader dr = ExecReader(sql);
-                while(dr.Read())
+                while (dr.Read())
                 {
                     room = SetRoom(dr);
                     roomlsit.Add(room);
                 }
                 dr.Close();
-                closeConn();
+                CloseConn();
             }
             catch (Exception)
             {
@@ -46,7 +50,7 @@ namespace WebApplication1.DbTool
 
         internal TRoom GetRoomById(int roomid)
         {
-            TRoom room=null;
+            TRoom room = null;
             try
             {
                 string sql = string.Format("select * from T_room where id={0}", roomid);
@@ -54,10 +58,9 @@ namespace WebApplication1.DbTool
                 if (dr.Read())
                 {
                     room = SetRoom(dr);
-                    
                 }
                 dr.Close();
-                closeConn();
+                CloseConn();
             }
             catch (Exception)
             {
@@ -66,33 +69,36 @@ namespace WebApplication1.DbTool
             return room;
         }
 
-        internal int delRoom(string roomid)
+        // 删除预定的会议
+        internal int DelRoom(string roomid)
         {
             int i = 0;
             try
             {
                 string sql = "";
-                sql = string.Format("delete from t_room where id={0}", roomid); 
+                sql = string.Format("delete from t_room where id={0}", roomid);
                 i = ExecNoQuery(sql);
             }
             catch (Exception)
             {
-
                 throw;
             }
             return i;
         }
 
+        // 设置TRoom的属性
         private TRoom SetRoom(SqlDataReader dr)
         {
             TRoom room = new TRoom();
             room.id = int.Parse(dr["id"].ToString());
             room.User_Name = dr["User_Name"].ToString();
+            room.Date = dr["Date"].ToString();
             room.Start_Time = dr["Start_Time"].ToString();
             room.End_Time = dr["End_Time"].ToString();
             room.Meeting_Subject = dr["Meeting_Subject"].ToString();
             room.Meeting_Title = dr["Meeting_Title"].ToString();
             room.Meeting_Remark = dr["Meeting_Remark"].ToString();
+            room.Meeting_Attendee = dr["Meeting_Attendee"].ToString();
             return room;
         }
 
@@ -102,41 +108,58 @@ namespace WebApplication1.DbTool
             try
             {
                 string sql = "";
-                if (room.id>0)
+                if (room.id > 0)
                 {
-                    sql = string.Format("update t_room set user_name='{0}',Meeting_Title='{1}' where id='{2}'",
-                                room.User_Name, room.Meeting_Title, room.id);
+                    sql = string.Format("update t_room set " +
+                                 "user_name='{0}', " +
+                                 "Date='{1}', " +
+                                 "start_time='{2}', " +
+                                 "end_time='{3}', " +
+                                 "meeting_subject='{4}', " +
+                                 "meeting_title='{5}', " +
+                                 "meeting_remark='{6}', " +
+                                 "meeting_attendee='{7}' " +
+                                 "where id='{8}'",
+                                room.User_Name, room.Date, room.Start_Time,
+                                room.End_Time, room.Meeting_Subject,
+                                room.Meeting_Title, room.Meeting_Remark,
+                                room.Meeting_Attendee, room.id);
                 }
                 else
+                {
                     sql = "INSERT INTO t_room " +
-                                "( user_name, start_time, end_time, meeting_subject, meeting_title, meeting_remark )" +
-                                "VALUES ('" +
-                                room.User_Name + "','" +
-                                room.Start_Time + "','" +
-                                room.End_Time + "','" +
-                                room.Meeting_Subject + "','" +
-                                room.Meeting_Title + "','" +
-                                room.Meeting_Remark + "')";
-                i= ExecNoQuery(sql);
+                           "( user_name, date, start_time, end_time, meeting_subject, " +
+                           "meeting_title, meeting_remark, meeting_attendee )" +
+                           "VALUES ('" +
+                           room.User_Name + "','" +
+                           room.Date + "','" +
+                           room.Start_Time + "','" +
+                           room.End_Time + "','" +
+                           room.Meeting_Subject + "','" +
+                           room.Meeting_Title + "','" +
+                           room.Meeting_Remark + "','" +
+                           room.Meeting_Attendee + "')";
+                }
+                i = ExecNoQuery(sql);
             }
             catch (Exception)
             {
-
                 throw;
             }
             return i;
-
         }
 
-        public static DataSource getInstance()
+        // 返回DataSource对象
+        public static DataSource GetInstance()
         {
             if (instance == null)
                 instance = new DataSource();
             return instance;
         }
+
+        // 数据库连接
         public SqlConnection GetConnection()
         {
-
             SqlConnection conn = null;
             try
             {
@@ -150,9 +173,11 @@ namespace WebApplication1.DbTool
                 return null;
             }
         }
-        public DataTable getDataTable(string sql)
+
+        //  执行Sql语句，返回DataTable
+        public DataTable GetDataTable(string sql)
         {
-            SqlConnection conn=null;
+            SqlConnection conn = null;
             DataTable dt = new DataTable();
             try
             {
@@ -175,15 +200,15 @@ namespace WebApplication1.DbTool
                 }
                 catch (Exception)
                 {
-                     
+
                 }
             }
             return dt;
         }
-        SqlConnection conn = null;
+
+        // 执行Sql语句，读取行的只进流方式
         public SqlDataReader ExecReader(string sql)
         {
-  
             try
             {
                 conn = GetConnection();
@@ -195,8 +220,9 @@ namespace WebApplication1.DbTool
             {
                 throw;
             }
-             
         }
+
+        // 执行Sql语句，返回受影响的列数
         public int ExecNoQuery(string sql)
         {
             int i = 0;
@@ -204,7 +230,7 @@ namespace WebApplication1.DbTool
             {
                 conn = GetConnection();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                i = cmd.ExecuteNonQuery(); 
+                i = cmd.ExecuteNonQuery();
             }
             catch (Exception)
             {
@@ -212,12 +238,13 @@ namespace WebApplication1.DbTool
             }
             finally
             {
-                closeConn();
+                CloseConn();
             }
             return i;
-
         }
-        public void closeConn()
+
+        /// 关闭连接
+        public void CloseConn()
         {
             try
             {
@@ -226,9 +253,7 @@ namespace WebApplication1.DbTool
             }
             catch (Exception)
             {
-
             }
-
         }
     }
 }
