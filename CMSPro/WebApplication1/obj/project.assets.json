@@ -12558,11 +12558,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "M:\\CMSPro\\CMSPro\\CMSPro\\WebApplication1\\CMSProv1.csproj",
-      "projectName": "CMSProv1",
-      "projectPath": "M:\\CMSPro\\CMSPro\\CMSPro\\WebApplication1\\CMSProv1.csproj",
+      "projectUniqueName": "M:\\CMSPro\\CMSPro\\WebApplication1\\WebApplication1.csproj",
+      "projectName": "WebApplication1",
+      "projectPath": "M:\\CMSPro\\CMSPro\\WebApplication1\\WebApplication1.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "M:\\CMSPro\\CMSPro\\CMSPro\\WebApplication1\\obj\\",
+      "outputPath": "M:\\CMSPro\\CMSPro\\WebApplication1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

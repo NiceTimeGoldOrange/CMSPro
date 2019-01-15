@@ -12621,11 +12621,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "M:\\CMSPro\\CMSPro\\CMSPro\\CMSPro.csproj",
+      "projectUniqueName": "M:\\CMSPro\\CMSPro\\CMSPro.csproj",
       "projectName": "CMSPro",
-      "projectPath": "M:\\CMSPro\\CMSPro\\CMSPro\\CMSPro.csproj",
+      "projectPath": "M:\\CMSPro\\CMSPro\\CMSPro.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "M:\\CMSPro\\CMSPro\\CMSPro\\obj\\",
+      "outputPath": "M:\\CMSPro\\CMSPro\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
