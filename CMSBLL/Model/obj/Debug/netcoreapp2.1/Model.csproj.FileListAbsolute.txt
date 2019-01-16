@@ -1,0 +1,9 @@
+M:\New Project\CMSPro\CMSBLL\Model\bin\Debug\netcoreapp2.1\Model.deps.json
+M:\New Project\CMSPro\CMSBLL\Model\bin\Debug\netcoreapp2.1\Model.dll
+M:\New Project\CMSPro\CMSBLL\Model\bin\Debug\netcoreapp2.1\Model.pdb
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.csprojAssemblyReference.cache
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.csproj.CoreCompileInputs.cache
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.AssemblyInfoInputs.cache
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.AssemblyInfo.cs
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.dll
+M:\New Project\CMSPro\CMSBLL\Model\obj\Debug\netcoreapp2.1\Model.pdb
