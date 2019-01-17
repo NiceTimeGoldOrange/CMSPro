@@ -1,0 +1,13 @@
+M:\New Project\CMSPro\CMSBLL\DALFactory\obj\Debug\netcoreapp2.1\DALFactory.csprojAssemblyReference.cache
+M:\New Project\CMSPro\CMSBLL\DALFactory\obj\Debug\netcoreapp2.1\DALFactory.csproj.CoreCompileInputs.cache
+M:\New Project\CMSPro\CMSBLL\DALFactory\obj\Debug\netcoreapp2.1\DALFactory.AssemblyInfoInputs.cache
+M:\New Project\CMSPro\CMSBLL\DALFactory\obj\Debug\netcoreapp2.1\DALFactory.AssemblyInfo.cs
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\DALFactory.deps.json
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\DALFactory.dll
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\IDAL.dll
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\Model.dll
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\System.Data.SqlClient.dll
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\IDAL.pdb
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\Model.pdb
+M:\New Project\CMSPro\CMSBLL\DALFactory\bin\Debug\netcoreapp2.1\System.Data.SqlClient.xml
+M:\New Project\CMSPro\CMSBLL\DALFactory\obj\Debug\netcoreapp2.1\DALFactory.csproj.CopyComplete

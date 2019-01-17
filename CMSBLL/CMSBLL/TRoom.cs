@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CMSBLL
+namespace BLL
 {
     public class TRoom : Controller
     {
@@ -71,6 +71,20 @@ namespace CMSBLL
                 throw;
             }
             return Json("msg:error");
+        }
+
+        public IActionResult GetInfoByDateService(string date)
+        {
+            TRoomInfo room = null;
+            try
+            {
+                room = SQLServerDAL.TRoom.GetInstance().GetRoomByDate(date);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json(room);
         }
     }
 }

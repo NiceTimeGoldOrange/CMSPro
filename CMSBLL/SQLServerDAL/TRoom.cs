@@ -9,7 +9,7 @@ namespace SQLServerDAL
     public class TRoom : ITRoom
     {
         private static TRoom instance;
-        private DbTool opt = new DbTool();
+        private SQLHelper opt = new SQLHelper();
 
         public TRoom()
         {
@@ -30,7 +30,7 @@ namespace SQLServerDAL
             int i = 0;
             try
             {
-                string sql = string.Format("delete from t_room where id={0}", roomid);
+                string sql = string.Format("DELETE FROM t_room WHERE id={0}", roomid);
                 i = opt.ExecNoQuery(sql);
             }
             catch (Exception)
@@ -38,6 +38,37 @@ namespace SQLServerDAL
                 throw;
             }
             return i;
+        }
+
+
+        public TRoomInfo GetRoomByDate(string date)
+        {
+            TRoomInfo room = null;
+            try
+            {
+                string sql = string.Format("SELECT " +
+                    " id,user_name,date," +
+                    "start_time,end_time," +
+                    "meeting_subject," +
+                    "meeting_title, meeting_remark," +
+                    "meeting_attendee  " +
+                    "FROM " +
+                    "T_room " +
+                    "WHERE " +
+                    "date='{0}'", date);
+                SqlDataReader dr = opt.ExecReader(sql);
+                if (dr.Read())
+                {
+                    room = opt.SetRoom(dr);
+                }
+                dr.Close();
+                opt.CloseConn();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return room;
         }
 
         public TRoomInfo GetRoomById(int roomid)
@@ -51,7 +82,7 @@ namespace SQLServerDAL
                     "meeting_subject," +
                     "meeting_title, meeting_remark," +
                     "meeting_attendee  " +
-                    "from " +
+                    "FROM " +
                     "T_room " +
                     "WHERE " +
                     "id={0}", roomid);
@@ -82,7 +113,7 @@ namespace SQLServerDAL
                     "meeting_subject," +
                     "meeting_title, meeting_remark," +
                     "meeting_attendee  " +
-                    "from " +
+                    "FROM " +
                     "T_room ";
                 SqlDataReader dr = opt.ExecReader(sql);
                 while (dr.Read())
@@ -119,7 +150,7 @@ namespace SQLServerDAL
                                  "meeting_title='{5}', " +
                                  "meeting_remark='{6}', " +
                                  "meeting_attendee='{7}' " +
-                                 "where id='{8}'",
+                                 "WHERE id='{8}'",
                                 room.User_Name, room.Date, room.Start_Time,
                                 room.End_Time, room.Meeting_Subject,
                                 room.Meeting_Title, room.Meeting_Remark,

@@ -1,115 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Index";
 }
-<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/jquery-3.3.1.js"></script>
+<script>
+    $(function () {
+        $("[data-toggle='popover']").popover();
+    });
+    $(".form_datetime").datetimepicker({
+        format: "dd MM yyyy - hh:ii",
+        linkField: "mirror_field",
+        linkFormat: "yyyy-mm-dd hh:ii"
+    });
+
+    $('.form_date').datetimepicker({
+        language: 'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+    $('.form_time').datetimepicker({
+        language: 'fr',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
+    });
+</script>
+
 <script type="text/javascript">
-    function uf_add() {
+    function getRoomByDate(date) {
         var room = {};
-        room.Id = $("#txtroomid").val();
-        room.user_Name = $("#txtusername").val();
-        room.date = $("#txtdate").val();
-        room.start_Time = $("#txtstarttime").val();
-        room.end_Time = $("#txtendtime").val();
-        room.meeting_Subject = $("#txtsubject").val();
-        room.meeting_Title = $("#txttitle").val();
-        room.meeting_Remark = $("#txtmeetingmark").val();
-        room.meeting_Attendee = $("#txtattendee").val();
 
-        //alert(JSON.stringify(room));
         $.ajax({
-            url: "/room/AddRoom",
-            type: 'POST',
-            data: { jsonString: JSON.stringify(room) },// {roomName: txtroomName},
+            url: "/room/GetRoomByDate",
+            type: "GET",
+            data: { date: date },
             success: function (data) {
-                if (data == "ok") {
-                    loadRoom();
-                    $("#txtroomid").val("0");
-                    $("#txtusername").val("");
-                    $("#txtdate").val("");
-                    $("#txtstarttime").val("");
-                    $("#txtendtime").val("");
-                    $("#txtsubject").val("");
-                    $("#txttitle").val("");
-                    $("#txtmeetingmark").val("");
-                    $("#txtattendee").val("");
-                }
-            },
-            error: function () {
-                alert("sth wrong");
-            }
-        });
-    }
+                //for (var i = 0; i < data.length; i++) {
+                room.start_Time = data[1].start_Time;
+                room.end_Time = data[1].end_Time;
+                alert(JSON.stringify(room));
 
-    function loadRoom(pageindex) {
-        var tbody = document.getElementById("tbody-result");
-        $.ajax({
-            url: "/room/RoomList",
-            type: 'Get',
-            data: { pageindex: pageindex },
-            success: function (data) {
-                if (data.length > 0) {
-                    var str = "";
-                    for (var i = 0; i < data.length; i++) {
-                        str += "<tr>" +
-                            "<td>" + data[i].user_Name + "</td>" +
-                            "<td>" + data[i].date + "</td>" +
-                            "<td>" + data[i].start_Time + "</td>" +
-                            "<td>" + data[i].end_Time + "</td>" +
-                            "<td>" + data[i].meeting_Subject + "</td>" +
-                            "<td>" + data[i].meeting_Title + "</td>" +
-                            "<td>" + data[i].meeting_Remark + "</td>" +
-                            "<td>" + data[i].meeting_Attendee + "</td>" +
-
-                            "<td><a href=\"javascrip:void();\" onclick=\"modify('" + data[i].id + "');\">修改</a></td>" +
-                            "<td><a href=\"javascrip:void();\" onclick=\"del('" + data[i].id + "');\">删除</a></td>" +
-                            "<td><a href=\"javascrip:void();\" onclick=\"ap('" + data[i].id + "');\">时间安排</a></td>" +
-                            "</tr>";
-                    }
-                    tbody.innerHTML = str;
-                }
-            },
-            error: function () {
-                alert("sth wrong");
-            }
-        });
-    }
-
-    function modify(roomid) {
-        $.ajax({
-            url: "/room/GetRoomById",
-            type: 'Get',
-            data: { roomid: roomid },
-            
-            success: function (data) {
-                $("#txtroomid").val(data.id);
-                $("#txtusername").val(data.user_Name);
-                $("#txtdate").val(data.date);
-                $("#txtstarttime").val(data.start_Time);
-                $("#txtendtime").val(data.end_Time);
-                $("#txtsubject").val(data.meeting_Subject);
-                $("#txttitle").val(data.meeting_Title);
-                $("#txtmeetingmark").val(data.meeting_Remark);
-                $("#txtattendee").val(data.meeting_Attendee);
-            },
-            error: function () {
-                alert("sth wrong");
-            }
-        });
-    }
-
-    function ap() {
-        //加载t_room_ap
-    }
-
-    function del(roomid) {
-        if (!confirm("确定删除?")) return;
-        alert(roomid);
-        $.ajax({
-            url: "/room/Del",
-            type: 'Get',
-            data: { roomid: roomid },
-            success: function (data) {
-                loadRoom();
+                //}
+                 
             },
             error: function () {
                 alert("sth wrong");
@@ -118,50 +59,341 @@
     }
 </script>
 
-<h3>ROOM</h3>
-<hr />
-<div class="table-container">
-    <table class="ui nine column table celled table-result table-bordered" id="table-result">
-        <thead>
-            <tr>
-                <th>User_Name</th>
-                <th>Date</th>
-                <th>Start_Time</th>
-                <th>End_Time</th>
-                <th>Meeting_Subject</th>
-                <th>Meeting_Title</th>
-                <th>Meeting_Remark</th>
-                <th>Meeting_Attendee</th>
-                <th colspan="3" align="center">操作</th>
-            </tr>
-        </thead>
-        <tbody id="tbody-result" name="tbody-result"></tbody>
-    </table>
-</div>
-<hr />
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/index.css" rel="stylesheet">
+    <script src="~/js/jquery-3.3.1.js"></script>
+    <script src="~/js/bootstrap.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.js"></script>
+    <script src="~/js/locales/bootstrap-datetimepicker.fr.js"></script>
+    <title>会议室预定系统</title>
+</head>
 
-<h2> 增加会议室</h2>
-<hr />
-<form id="form1" name="form1">
-    <input type="hidden" value="0" name="txtroomid" id="txtroomid" />
-    使用部  门：<input type="text" name="txtusername" id="txtusername" />
-    <br />
-    日     期：<input type="text" name="txtdate" id="txtdate" />
-    <br />
-    开始时  间：<input type="text" name="txtstarttime" id="txtstarttime" />
-    <br />
-    结束时  间：<input type="text" name="txtendtime" id="txtendtime" />
-    <br />
-    会议概  要：<input type="text" name="txtsubject" id="txtsubject" />
-    <br />
-    会议标  题：<input type="text" name="txttitle" id="txttitle" />
-    <br />
-    会议室名称：<input type="text" name="txtmeetingmark" id="txtmeetingmark" />
-    <br />
-    参加    者：<input type="text" name="txtattendee" id="txtattendee" />
-    <br />
-    <input type="button" name="btnadd" value="save" onclick="uf_add()" />
-</form>
-<script type="text/javascript">
-    loadRoom();
-</script>
+<body>
+    <div class="row top-div">
+        <div class="col-md-12" style="font-weight:600"><img src="~/images/Title.svg" style="height:30px;width:30px;" /><span style="padding-left:10px">会议室预定系统</span></div>
+    </div>
+    <div class="row date">
+        <div class="col-md-1"> <a class="btn btn-default left-button" href="#" role="button" style="width:40px;height:40px;font-size:20px"><</a> </div>
+        <div class="col-md-10">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="date-list">
+                    <a href="javascript:void();" style="color:#666666">
+                        <span class="list-week">周一</span>
+                        <span class="spanvalue" id="s1" onclick="getRoomByDate('2019-1-16')">2019-1-16</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周二</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-17')">2019-1-17</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周三</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-18')">2019-1-18</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周四</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-19')">2019-1-19</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周五</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-20')">2019-1-20</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周六</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-21')">2019-1-21</span>
+                    </a>
+                </li>
+                <li role="presentation" class="date-list">
+                    <a href="#" style="color:#666666">
+                        <span class="list-week">周日</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-22')">2019-1-22</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-1" style="float:right;margin-right:-65px"> <a class="btn btn-default right-button" href="#" role="button" style="width:40px;height:40px;font-size:20px">></a> </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-bordered">
+                <tr>
+                    <td></td>
+                    <td>
+                        <span>会议室一</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:15人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室二</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:10人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室三</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室四</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室五</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室六</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                    <td>
+                        <span>会议室七</span>
+                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:20人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">9:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">10:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">11:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">12:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">13:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">14:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">15:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">16:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">17:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="left-td" rowspan="2">18:00</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <div class="row" style="margin-top:-10px;float:left">
+            <div class="col-lg-12 foot-div">
+                <div style="font-weight:600;"><a class="btn btn-default demo_exmple_end"></a> 已结束</div>
+                <div style="font-weight:600;"><a class="btn btn-default demo_exmple_begin"></a> 未开始</div>
+            </div>
+        </div>
+        @*预订界面*@
+        <div style="float:left;margin-left:100px"><button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">添加预订</button></div>
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="add_index">
+                    <div class="add_title"><br /><div class="modal-top">我的预约</div></div>
+                    <form>
+                        <div class="model-tool">
+                            <button class="btn model-tool-btn" onclick="uf_add()"><img src="~/images/save.svg" class="svg" /> 保存</button>
+                            <button class="btn model-tool-btn"><img src="~/images/cancel.svg" class="svg" /> 取消</button>
+                        </div>
+                        <div>
+                            <div style="margin-left:40px;margin-top:20px">
+                                <img src="~/images/house.svg" class="form-svg" />
+                                <input type="hidden" name="txtroomid" id="txtroomid" value="0" />
+                                <input type="text" class="form-control" id="txttitle" placeholder="添加标题" style="width:500px;height:45px;margin-left:80px;font-size:25px" />
+                            </div>
+                            <div style="margin-left:40px;margin-top:30px">
+                                <img src="~/images/person.svg" class="form-svg" />
+                                <input type="text" class="form-control" id="txtattendee" placeholder="添加参会者" style="width:500px;height:35px;margin-left:80px;font-size:17px" />
+                            </div>
+                            <div style="margin-left:40px;margin-top:30px">
+                                <div class="input-append date form_datetime" data-date="2012-12-21T15:25:00Z" style="width:200px">
+                                    <input size="16" type="text" value="" readonly width="100" class="form-control">
+                                    <span class="add-on"><i class="icon-remove"></i></span>
+                                    <span class="add-on"><i class="icon-th"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@*<script type="text/javascript">
+        loadRoom();
+    </script>*@

@@ -1,4 +1,4 @@
-﻿using CMSBLL;
+﻿using BLL;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
@@ -34,6 +34,12 @@ namespace Web.Controllers
         public IActionResult AddRoom(string jsonString)
         {
             return service.AddRoomService(jsonString);
+        }
+
+        [HttpGet]
+        public IActionResult GetRoomByDate(string date)
+        {
+            return service.GetInfoByDateService(date);
         }
     }
 }

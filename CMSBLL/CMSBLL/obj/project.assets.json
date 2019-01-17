@@ -1593,7 +1593,7 @@
       ]
     },
     "Microsoft.NETCore.App/2.1.0": {
-      "sha512": "AvT774nTFgU8cYcGO9j1EMwuayKslxqYTurg32HGpWa2hEYNuW2+XgYVVNcZe6Ndbr84QX6fwaOZfd5n+1m2OA==",
+      "sha512": "JNHhG+j5eIhG26+H721IDmwswGUznTwwSuJMFe/08h0X2YarHvA15sVAvUkA/2Sp3W0ENNm48t+J7KTPRqEpfA==",
       "type": "package",
       "path": "microsoft.netcore.app/2.1.0",
       "files": [
@@ -3939,9 +3939,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "M:\\New Project\\CMSPro\\CMSBLL\\CMSBLL\\CMSBLL.csproj",
-      "projectName": "CMSBLL",
-      "projectPath": "M:\\New Project\\CMSPro\\CMSBLL\\CMSBLL\\CMSBLL.csproj",
+      "projectUniqueName": "M:\\New Project\\CMSPro\\CMSBLL\\CMSBLL\\BLL.csproj",
+      "projectName": "BLL",
+      "projectPath": "M:\\New Project\\CMSPro\\CMSBLL\\CMSBLL\\BLL.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
       "outputPath": "M:\\New Project\\CMSPro\\CMSBLL\\CMSBLL\\obj\\",
       "projectStyle": "PackageReference",

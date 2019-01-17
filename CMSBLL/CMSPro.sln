@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMSBLL", "CMSBLL\CMSBLL.csproj", "{FCEA7D77-D246-4B5F-9044-2F63BDA35F08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLL", "CMSBLL\BLL.csproj", "{FCEA7D77-D246-4B5F-9044-2F63BDA35F08}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DALFactory", "DALFactory\DALFactory.csproj", "{EE024386-1DC4-4C44-900B-994B9387CD99}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLServerDAL", "SQLServerDAL\SQLServerDAL.csproj", "{FAC644A0-9D6C-430C-90DC-D9BCADBB3E1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{06A0C64F-F73E-475A-A03E-9C7ECF353C37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{06A0C64F-F73E-475A-A03E-9C7ECF353C37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
