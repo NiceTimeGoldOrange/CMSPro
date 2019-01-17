@@ -75,16 +75,16 @@ namespace BLL
 
         public IActionResult GetInfoByDateService(string date)
         {
-            TRoomInfo room = null;
+            List<TRoomInfo> roomlist = null;
             try
             {
-                room = SQLServerDAL.TRoom.GetInstance().GetRoomByDate(date);
+                roomlist = SQLServerDAL.TRoom.GetInstance().GetRoomByDate(date);
             }
             catch (Exception)
             {
                 throw;
             }
-            return Json(room);
+            return Json(roomlist);
         }
     }
 }

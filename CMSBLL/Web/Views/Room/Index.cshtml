@@ -38,19 +38,15 @@
 <script type="text/javascript">
     function getRoomByDate(date) {
         var room = {};
-
         $.ajax({
             url: "/room/GetRoomByDate",
             type: "GET",
             data: { date: date },
             success: function (data) {
-                //for (var i = 0; i < data.length; i++) {
-                room.start_Time = data[1].start_Time;
-                room.end_Time = data[1].end_Time;
-                alert(JSON.stringify(room));
-
-                //}
-                 
+                for (var i = 0; i < data.length; i++) {
+                    alert(data[i].start_Time);
+                    alert(data.length);
+                }
             },
             error: function () {
                 alert("sth wrong");
@@ -87,7 +83,7 @@
                 <li role="presentation" class="date-list">
                     <a href="#" style="color:#666666">
                         <span class="list-week">周二</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-17')">2019-1-17</span>
+                        <span class="spanvalue" onclick="getRoomByDate('2019-1-14')">2019-1-14</span>
                     </a>
                 </li>
                 <li role="presentation" class="date-list">

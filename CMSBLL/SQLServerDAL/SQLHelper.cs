@@ -23,6 +23,26 @@ namespace SQLServerDAL
             }
         }
 
+        public int ExecNoScalar(string sql)
+        {
+            int i = 0;
+            try
+            {
+                conn = GetConnection();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                i = (int)cmd.ExecuteScalar();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                CloseConn();
+            }
+            return i;
+        }
+
         public int ExecNoQuery(string sql)
         {
             int i = 0;

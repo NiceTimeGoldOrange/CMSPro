@@ -2,6 +2,7 @@
 using Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace SQLServerDAL
@@ -40,9 +41,9 @@ namespace SQLServerDAL
             return i;
         }
 
-
-        public TRoomInfo GetRoomByDate(string date)
+        public List<TRoomInfo> GetRoomByDate(string date)
         {
+            List<TRoomInfo> roomlist = new List<TRoomInfo>();
             TRoomInfo room = null;
             try
             {
@@ -57,9 +58,10 @@ namespace SQLServerDAL
                     "WHERE " +
                     "date='{0}'", date);
                 SqlDataReader dr = opt.ExecReader(sql);
-                if (dr.Read())
+                while (dr.Read())
                 {
                     room = opt.SetRoom(dr);
+                    roomlist.Add(room);
                 }
                 dr.Close();
                 opt.CloseConn();
@@ -68,7 +70,7 @@ namespace SQLServerDAL
             {
                 throw;
             }
-            return room;
+            return roomlist;
         }
 
         public TRoomInfo GetRoomById(int roomid)

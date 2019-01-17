@@ -15,6 +15,6 @@ namespace IDAL
 
         int SaveRoom(TRoomInfo room);
 
-        TRoomInfo GetRoomByDate(string date);
+        List<TRoomInfo> GetRoomByDate(string date);
     }
 }
