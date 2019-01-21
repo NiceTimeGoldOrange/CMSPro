@@ -127,7 +127,6 @@ namespace SQLServerDAL
         public TRoomInfo SetRoom(SqlDataReader dr)
         {
             TRoomInfo room = new TRoomInfo();
-            string str = dr["Id"].ToString();
             room.Id = int.Parse(dr["Id"].ToString());
             room.User_Name = dr["User_Name"].ToString();
             room.Date = dr["Date"].ToString();
@@ -137,6 +136,21 @@ namespace SQLServerDAL
             room.Meeting_Title = dr["Meeting_Title"].ToString();
             room.Meeting_Remark = dr["Meeting_Remark"].ToString();
             room.Meeting_Attendee = dr["Meeting_Attendee"].ToString();
+            return room;
+        }
+
+        public NciTRoomInfo SetNciRoomInfo(SqlDataReader dr)
+        {
+            NciTRoomInfo room = new NciTRoomInfo();
+            room.Id = int.Parse(dr["Id"].ToString());
+            room.Times = dr["Times"].ToString();
+            room.Room1 = dr["Room1"].ToString();
+            room.Room2 = dr["Room2"].ToString();
+            room.Room3 = dr["Room3"].ToString();
+            room.Room4 = dr["Room4"].ToString();
+            room.Room5 = dr["Room5"].ToString();
+            room.Room6 = dr["Room6"].ToString();
+            room.Room7 = dr["Room7"].ToString();
             return room;
         }
     }

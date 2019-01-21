@@ -41,6 +41,27 @@ namespace SQLServerDAL
             return i;
         }
 
+        public List<NciTRoomInfo> GetNciRoomList(string srq,string erq)
+        {
+            List<NciTRoomInfo> roomlist = new List<NciTRoomInfo>();
+            NciTRoomInfo room = null;
+            try
+            {
+                string sql = string.Format("exec getRoom '{0}','{1}'", srq, erq);
+                SqlDataReader dr = opt.ExecReader(sql);
+                while (dr.Read())
+                {
+                    room = opt.SetNciRoomInfo(dr);
+                    roomlist.Add(room);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return roomlist;
+        }
+
         public List<TRoomInfo> GetRoomByDate(string date)
         {
             List<TRoomInfo> roomlist = new List<TRoomInfo>();
@@ -181,6 +202,40 @@ namespace SQLServerDAL
                 throw;
             }
             return i;
+        }
+
+        public TRoomInfo GetRoomByMDSE(string id, string date, string times)
+        {
+            TRoomInfo room = new TRoomInfo();
+            string sql = string.Format("select * from t_room " +
+                "where " +
+                "meeting_remark = '{0}' and " +
+                "date = '{1}' and " +
+                "start_time <= '{2}' and " +
+                "'{2}'<=end_time" + " union " + 
+                "select * from t_room " + 
+                "where " +
+                "meeting_remark = '{0}' and " +
+                "date = '{1}' and " +
+                "start_time > '{2}' and " +
+                "'{2}'<=end_time"
+                ,
+                id, date, times );
+            try
+            {
+                SqlDataReader dr = opt.ExecReader(sql);
+                if (dr.Read())
+                {
+                    room = opt.SetRoom(dr);
+                }
+                dr.Close();
+                opt.CloseConn();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return room;
         }
     }
 }

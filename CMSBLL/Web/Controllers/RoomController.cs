@@ -13,9 +13,9 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult RoomList()
+        public IActionResult RoomList(string rq)
         {
-            return service.RoomListService();
+            return service.RoomListService(rq);
         }
 
         [HttpGet]
@@ -40,6 +40,12 @@ namespace Web.Controllers
         public IActionResult GetRoomByDate(string date)
         {
             return service.GetInfoByDateService(date);
+        }
+
+        [HttpGet]
+        public IActionResult GetRoomByMDSE(string id,string date,string times)
+        {
+            return service.GetRoomByMDSE(id, date, times);
         }
     }
 }

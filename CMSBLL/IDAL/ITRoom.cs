@@ -1,7 +1,5 @@
 ﻿using Model;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace IDAL
 {
@@ -16,5 +14,7 @@ namespace IDAL
         int SaveRoom(TRoomInfo room);
 
         List<TRoomInfo> GetRoomByDate(string date);
+
+        TRoomInfo GetRoomByMDSE(string mark, string date, string times);
     }
 }

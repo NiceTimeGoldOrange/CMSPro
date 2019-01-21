@@ -8,12 +8,14 @@ namespace BLL
 {
     public class TRoom : Controller
     {
-        public IActionResult RoomListService()
+        public IActionResult RoomListService(string rq)
         {
-            List<TRoomInfo> roomlist = null;
+            List<NciTRoomInfo> roomlist = null;
+            //DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("yyyy-MM-dd")
+            if (String.IsNullOrEmpty(rq)) rq = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                roomlist = SQLServerDAL.TRoom.GetInstance().GetRoomList();
+                roomlist = SQLServerDAL.TRoom.GetInstance().GetNciRoomList(rq,rq);
             }
             catch (Exception)
             {
@@ -85,6 +87,20 @@ namespace BLL
                 throw;
             }
             return Json(roomlist);
+        }
+
+        public IActionResult GetRoomByMDSE(string id, string date, string times)
+        {
+            TRoomInfo room = null;
+            try
+            {
+                room = SQLServerDAL.TRoom.GetInstance().GetRoomByMDSE(id, date, times);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json(room);
         }
     }
 }

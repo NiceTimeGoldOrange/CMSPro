@@ -64,7 +64,7 @@ namespace Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Rome}/{action=Index}/{id?}");
+                    template: "{controller=Room}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,60 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Index";
-}
-<script src="~/js/jquery-3.3.1.js"></script>
-<script>
-    $(function () {
-        $("[data-toggle='popover']").popover();
-    });
-    $(".form_datetime").datetimepicker({
-        format: "dd MM yyyy - hh:ii",
-        linkField: "mirror_field",
-        linkFormat: "yyyy-mm-dd hh:ii"
-    });
-
-    $('.form_date').datetimepicker({
-        language: 'fr',
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 2,
-        forceParse: 0
-    });
-    $('.form_time').datetimepicker({
-        language: 'fr',
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 1,
-        minView: 0,
-        maxView: 1,
-        forceParse: 0
-    });
-</script>
-
-<script type="text/javascript">
-    function getRoomByDate(date) {
-        var room = {};
-        $.ajax({
-            url: "/room/GetRoomByDate",
-            type: "GET",
-            data: { date: date },
-            success: function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    alert(data[i].start_Time);
-                    alert(data.length);
-                }
-            },
-            error: function () {
-                alert("sth wrong");
-            }
-        });
-    }
-</script>
-
+﻿<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="~/css/bootstrap.min.css" rel="stylesheet">
@@ -62,288 +6,211 @@
     <script src="~/js/jquery-3.3.1.js"></script>
     <script src="~/js/bootstrap.js"></script>
     <script src="~/js/bootstrap-datetimepicker.js"></script>
-    <script src="~/js/locales/bootstrap-datetimepicker.fr.js"></script>
+    <script src="~/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="~/css/bootstrap-datetimepicker.css" />
+    <script src="~/js/Tools.js"></script>
     <title>会议室预定系统</title>
+
+    <script type="text/javascript">
+        var roomid = 0;
+        var remark = "";
+        var clickDate = "";
+
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        month = month < 10 ? "0" + month : month;
+        var currDate = date.getFullYear() + '-' + month + '-' + date.getDate();
+        function ondbclick(id, times) {
+            //alert(id);
+            roomid = id;
+            var d = new Date();
+            var month = d.getMonth() + 1;
+            //alert(roomid);
+            month = month < 10 ? "0" + month : month;
+            if (clickDate == "") {
+                clickDate = currDate;
+            }
+            $.ajax({
+                url: "/room/GetRoomByMDSE?id=" + id + "&times=" + times + "&date=" + clickDate,
+                type: "GET",
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    if (data.id == '') {
+                        //alert("1111111111");
+                        $("#txtdate").val(clickDate);
+                        $("#txtstarttime").val(times); //
+                        $("#txtendtime").val("18:30"); // 设置默认时间
+                        $("#txtmeetingremark").val("会议室" + roomid);
+                    }
+                    else {
+                        //alert(JSON.stringify(data));
+                        $("#txthidden").val(data.id);
+                        $("#txtsubject").val(data.meeting_Title);
+                        $("#txtattendee").val(data.meeting_Attendee);
+                        $("#txtdate").val(data.date);
+                        $("#txtstarttime").val(data.start_Time);
+                        $("#txtendtime").val(data.end_Time);
+                        $("#txtmeetingremark").val("会议室" + data.meeting_Remark);
+                        //alert(data.id);
+                        $("#txthidden").val(data.id);
+                        //alert($("#txthidden").val());
+                    }
+                },
+                error: function () {
+                    alert("sth error");
+                }
+            });
+            //$("#txtdate").val(d.getFullYear() + '-' + month + '-' + d.getDate());
+
+
+            $("#display").click();
+            var tdSeq = remark;
+            var trSeq = $(this).parent().prevAll().length;
+
+            var el = $(".thead td").eq(tdSeq).text();
+            $("#cms").val(el);
+
+        }
+
+        function uf_add() {
+            alert('22222');
+            var room = {};
+            room.id = $("#txthidden").val();
+            //alert(room.id);
+            room.user_Name = "Aecg";
+            room.meeting_Title = $("#txtsubject").val();
+            room.meeting_Subject = $("#txtsubject").val();
+            room.meeting_Attendee = $("#txtattendee").val();
+            room.date = $("#txtdate").val();
+            room.start_Time = $("#txtstarttime").val();
+            room.end_Time = $("#txtendtime").val();
+            room.meeting_Remark = roomid;// $("#cms").val();
+
+            //alert(JSON.stringify(room));
+            $.ajax({
+                url: "/room/AddRoom",
+                type: 'POST',
+                data: { jsonString: JSON.stringify(room) },// { roomName: txtroomName},
+                success: function (data) {
+                    if (data == "ok") {
+                        $("#txtroomid").val("0");
+                        $("#txttitle").val("");
+                        $("#txtattendee").val("");
+                        $("#txtdate").val("");
+                        $("#txtstarttime").val("");
+                        $("#txtendtime").val("");
+                        $("#txtmeetingremark").val("");
+                        roomid = 0;
+                    }
+                },
+                error: function () {
+                    alert("sth wrong add");
+                }
+            });
+            getNciRoomList(1, clickDate);
+        }
+
+        function del() {
+            if (!confirm("确定删除?")) return;
+            //alert($("#txthidden").val());
+            $.ajax({
+                url: "/room/del?roomid=" + $("#txthidden").val(),
+                type: 'Get',
+                success: function (data) {
+                    getNciRoomList(1, clickDate);
+                },
+                error: function () {
+                    alert("sth wrong");
+                }
+            });
+        }
+    </script>
+
+    <script type="text/javascript">
+        var tbroomlist = $("#tbroomlist");
+        function getNciRoomList(pageindex, rq) {
+            $.ajax({
+                url: "/room/RoomList?rq=" + rq,
+                type: "GET",
+                data: { pageindex: pageindex },
+                success: function (data) {
+                    var body = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            body += "<tr class=\" left-tr\" >" +
+                                "<td class=\"left-td\" >" + data[i].times + "</td>" +
+                                "<td ondblclick=\"ondbclick(1,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room1 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(2,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room2 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(3,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room3 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(4,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room4 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(5,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room5 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(6,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room6 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+                                "<td ondblclick=\"ondbclick(7,'" + data[i].times + "');\" class=\"left-td\" " + (data[i].room7 == "" ? ">" : "style=\"background-color: #ffbcad; \">") + "</td>" +
+
+                                "</tr>";
+                        }
+                        $("#tbody").html(body);
+                        //debugger;
+                        // alert(JSON.stringify(body));
+                        //alert(JSON.stringify(data));
+                    }
+                },
+                error: function () {
+                    alert("sth wrong");
+                }
+            });
+        }
+
+        // 动态的改变日期
+        getNciRoomList(1, currDate);
+    </script>
 </head>
 
 <body>
     <div class="row top-div">
         <div class="col-md-12" style="font-weight:600"><img src="~/images/Title.svg" style="height:30px;width:30px;" /><span style="padding-left:10px">会议室预定系统</span></div>
     </div>
-    <div class="row date">
-        <div class="col-md-1"> <a class="btn btn-default left-button" href="#" role="button" style="width:40px;height:40px;font-size:20px"><</a> </div>
-        <div class="col-md-10">
-            <ul class="nav nav-tabs">
-                <li role="presentation" class="date-list">
-                    <a href="javascript:void();" style="color:#666666">
-                        <span class="list-week">周一</span>
-                        <span class="spanvalue" id="s1" onclick="getRoomByDate('2019-1-16')">2019-1-16</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周二</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-14')">2019-1-14</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周三</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-18')">2019-1-18</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周四</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-19')">2019-1-19</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周五</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-20')">2019-1-20</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周六</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-21')">2019-1-21</span>
-                    </a>
-                </li>
-                <li role="presentation" class="date-list">
-                    <a href="#" style="color:#666666">
-                        <span class="list-week">周日</span>
-                        <span class="spanvalue" onclick="getRoomByDate('2019-1-22')">2019-1-22</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-1" style="float:right;margin-right:-65px"> <a class="btn btn-default right-button" href="#" role="button" style="width:40px;height:40px;font-size:20px">></a> </div>
-    </div>
+    <div class="row jcalendar_week" id="jcalendar_week" style="border: solid 1px #ccc;font-size:25px;margin-left:1px;margin-right:0px;font-weight:600"></div>
+
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-bordered">
-                <tr>
-                    <td></td>
-                    <td>
-                        <span>会议室一</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:15人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室二</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:10人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室三</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室四</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室五</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室六</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                    <td>
-                        <span>会议室七</span>
-                        <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:20人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">9:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">10:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">11:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">12:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">13:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">14:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">15:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">16:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">17:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td class="left-td" rowspan="2">18:00</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <table id="tbroomlist" class="table table-bordered">
+                <thead>
+                    <tr class="thead">
+                        <td></td>
+                        <td>
+                            <div>会议室一</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:15人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室二</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:10人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室三</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室四</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:6人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室五</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室六</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:8人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                        <td>
+                            <div>会议室七</div>
+                            <button type="button" class="btn btn-default btn-popover" data-container="body" data-toggle="popover" data-placement="bottom" title="会议室大小:20人" data-content="会议室资源：投影仪，笔记本"><img src="~/images/mark.svg" class="question_mark" /></button>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
             </table>
         </div>
     </div>
@@ -355,32 +222,65 @@
             </div>
         </div>
         @*预订界面*@
-        <div style="float:left;margin-left:100px"><button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">添加预订</button></div>
+        <div style="float:left;margin-left:100px"><button type="button" class="btn btn-primary" id="display" data-toggle="modal" data-target=".bs-example-modal-lg" style="visibility:hidden">添加预订</button></div>
         <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="add_index">
                     <div class="add_title"><br /><div class="modal-top">我的预约</div></div>
                     <form>
                         <div class="model-tool">
+                            <input type="hidden" name="txthidden" id="txthidden" />
                             <button class="btn model-tool-btn" onclick="uf_add()"><img src="~/images/save.svg" class="svg" /> 保存</button>
-                            <button class="btn model-tool-btn"><img src="~/images/cancel.svg" class="svg" /> 取消</button>
+                            <button class="btn model-tool-btn" onclick=""><img src="~/images/cancel.svg" class="svg" /> 取消</button>
+                            <button class="btn model-tool-btn" onclick="del()"><img src="~/images/cancel.svg" class="svg" />删除</button>
                         </div>
                         <div>
+                            <input type="hidden" value="0" name="txtroomid" id="txtroomid" />
                             <div style="margin-left:40px;margin-top:20px">
-                                <img src="~/images/house.svg" class="form-svg" />
-                                <input type="hidden" name="txtroomid" id="txtroomid" value="0" />
-                                <input type="text" class="form-control" id="txttitle" placeholder="添加标题" style="width:500px;height:45px;margin-left:80px;font-size:25px" />
+                                <img src="~/images/modal-title.svg" class="form-svg" />
+                                <input type="text" class="form-control" id="txtsubject" placeholder="添加标题" style="width:500px;height:45px;margin-left:80px;font-size:25px" />
                             </div>
                             <div style="margin-left:40px;margin-top:30px">
                                 <img src="~/images/person.svg" class="form-svg" />
                                 <input type="text" class="form-control" id="txtattendee" placeholder="添加参会者" style="width:500px;height:35px;margin-left:80px;font-size:17px" />
                             </div>
                             <div style="margin-left:40px;margin-top:30px">
-                                <div class="input-append date form_datetime" data-date="2012-12-21T15:25:00Z" style="width:200px">
-                                    <input size="16" type="text" value="" readonly width="100" class="form-control">
-                                    <span class="add-on"><i class="icon-remove"></i></span>
-                                    <span class="add-on"><i class="icon-th"></i></span>
+                                <img src="~/images/time.svg" class="form-svg" />
+                                <div class="form-group" style="width:200px;height:120px;margin-left:40px;float:left;margin-top:-20px">
+                                    <label for="dtp_input3" class="control-label">日期</label>
+                                    <div class="input-group date form_date " data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input3" data-link-format="hh:ii">
+                                        <input class="form-control" id="txtdate" size="16" type="text" value="" readonly style="height:40px">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input3" value="" /><br />
                                 </div>
+                                <div class="form-group" style="width:200px;height:120px;margin-left:60px;float:left;margin-top:-20px">
+                                    <label for="dtp_input3" class="control-label">开始时间</label>
+                                    <div class="input-group date form_time " data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii">
+                                        <input class="form-control" id="txtstarttime" size="16" type="text" value="" readonly style="height:40px" id="begin-time">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input3" value="" /><br />
+                                </div>
+                                <div class="form-group" style="width:200px;height:120px;margin-left:80px;float:left;margin-top:-20px">
+                                    <label for="dtp_input3" class="control-label">结束时间</label>
+                                    <div class="input-group date form_time " data-date="" data-date-format="hh:ii" data-link-field="dtp_input3" data-link-format="hh:ii">
+                                        <input class="form-control" id="txtendtime" size="16" type="text" value="" readonly style="height:40px">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+                                    </div>
+                                    <input type="hidden" id="dtp_input3" value="" /><br />
+                                </div>
+                            </div>
+                            <div style="margin-left:40px;margin-top:-40px;float:left">
+                                <img src="~/images/house.svg" class="form-svg" />
+                                <input id="txtmeetingremark" type="text" class="form-control" style="width:250px;height:35px;margin-left:80px;font-size:17px" readonly="readonly" />
+                            </div>
+                            <div style="margin-left:40px;padding-top:30px;float:left">
+                                <img src="~/images/letter.svg" class="form-svg" />
+                                <input id="" type="text" class="form-control" style="width:700px;height:300px;margin-left:80px;font-size:17px;vertical-align:text-bottom" />
                             </div>
                         </div>
                     </form>
@@ -388,8 +288,117 @@
             </div>
         </div>
     </div>
-</body>
+    <script src="~/js/script.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("[data-toggle='popover']").popover();
+        });
+        $(".form_datetime").datetimepicker({
+            format: "dd MM yyyy - hh:ii",
+            linkField: "mirror_field",
+            linkFormat: "yyyy-mm-dd hh:ii"
+        });
 
-@*<script type="text/javascript">
-        loadRoom();
-    </script>*@
+        $('.form_date').datetimepicker({
+            language: 'fr',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            todayBtn: 1
+        });
+
+        $('.form_time').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 1,
+            minView: 0,
+            maxView: 1,
+            forceParse: 0,
+            minuteStep: 30,
+
+        });
+        //$(".left-td").dblclick(function () {
+        //    alert("11");
+        //    $("#display").click();
+        //    var tdSeq = $(this).parent().find("td").index($(this)[0]);
+        //    var trSeq = $(this).parent().prevAll().length;
+        //    var el = $(".thead td").eq(tdSeq).text();
+        //    $("#cms").val(el);
+
+        //});
+        //$(".left-tr").dblclick(function () {
+        //    var tr = $(this);
+        //    var td = tr.find("td");
+        //    var el = td[0].textContent;
+        //    $("#begin-time").val(el);
+        //})  jcalendar_week
+
+        //调用周日历
+        var weekfn = new jcalendar_week({
+            element: "#jcalendar_week",//填充日历的dom元素
+            dayaddclass: function (date) {
+
+                //添加某天时给添加类名
+                //alert("1111");
+
+                return "";
+            },
+            dayclick: function (date, obj) {
+                //day点击事件
+                $(obj).addClass("calendar_day_act").siblings().removeClass("calendar_day_act");
+                var dateArr = JSON.stringify(date).split("-");
+                var month = (parseInt(dateArr[1]) + 1) < 10 ? "0" + dateArr[1] : dateArr[1]; // 01
+                var newDateStr = dateArr[0] + '-' + month + '-' + dateArr[2];
+                // alert(newDateStr); // "2019-01-20"
+                getNciRoomList(1, newDateStr.replace("\"", "").replace("\"", ""));
+                clickDate = newDateStr.replace("\"", "").replace("\"", "");
+            }
+        });
+
+        //获取周第一天
+        console.log(weekfn.weekfirstdate(2018, 36));
+        //获取传入日期为当年第几周（注:这里的月份从0开始）
+        console.log(weekfn.getweeknum(2018, 0, 16));
+        //跳转到指定周
+        function jumpweek() {
+            var getyear = parseInt($("#setyear").val());
+            var getweek = parseInt($("#setweek").val());
+            weekfn.confirmweek(getyear, getweek);
+            $('#pop').hide();
+        }
+        //跳转到本周
+        function tonowweek() {
+            weekfn.nowweek();
+            $('#pop').hide();
+        }
+
+        function trim(str) {
+            if (str == null || typeof str == "undefined") return ""
+            var str1 = str + ""
+
+            var mychar
+            for (var i = 0; i <= str1.length - 1; i++) {
+                mychar = str1.charAt(i);
+                if ((mychar != " ") && (mychar != "　" && mychar != "\r" && mychar != "\n")) break;
+            }
+            str1 = str1.substring(i, str1.length);
+
+            for (var i = str1.length - 1; i > 0; i--) {
+                mychar = str1.charAt(i);
+                if ((mychar != " ") && (mychar != "　") && mychar != "\r" && mychar != "\n") break;
+            }
+            return str1.substring(0, i + 1);
+        }
+    </script>
+
+</body>
+</html>
+
+

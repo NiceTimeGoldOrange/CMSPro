@@ -29,4 +29,3 @@ M:\New Project\CMSPro\CMSBLL\Web\bin\Debug\netcoreapp2.1\IDAL.pdb
 M:\New Project\CMSPro\CMSBLL\Web\obj\Debug\netcoreapp2.1\Razor\Views\Room\Index.g.cshtml.cs
 M:\New Project\CMSPro\CMSBLL\Web\bin\Debug\netcoreapp2.1\BLL.dll
 M:\New Project\CMSPro\CMSBLL\Web\bin\Debug\netcoreapp2.1\BLL.pdb
-M:\New Project\CMSPro\CMSBLL\Web\obj\Debug\netcoreapp2.1\Razor\Views\Index.g.cshtml.cs
